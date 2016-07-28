@@ -1,0 +1,31 @@
+wp-dev-mysql:
+    image: cmnh/modvol_mysql:latest
+    ports:
+        - "3306:3306"
+    environment:
+        - MYSQL_ROOT_PASSWORD=wp_dev_pw
+    volumes:
+        - ${PWD}/db:/var/lib/mysql
+    entrypoint: /localdb-run.sh
+
+wp-dev-apache-php:
+    image: cmnh/modvol_apache2_php:latest
+    links:
+        - wp-dev-mysql:db
+    ports:
+        - "80:80"
+    volumes:
+        - ${PWD}/source:/var/www/html
+
+wp-dev-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports: 
+        - "8080:80"
+    links:
+        - wp-dev-mysql:db
+    
+wp-dev-ngs:
+    image: cmnh/node_gulp_sass:nodev4
+    volumes:
+        - ${PWD}/source:/var/www/html
+        
